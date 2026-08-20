@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Preloader from "../components/Preloader";
+import preloader from './components/PreLoader'
 import Home from "./pages/Home";
 
 import Lenis from "lenis";
@@ -18,6 +18,7 @@ import Soups from "./pages/Soup";
 
 import OrderNow from "./pages/OrderNow";
 import ScrollToTop from "./components/ScrollToTop";
+import Preloader from "./components/PreLoader";
 
 gsap.registerPlugin(ScrollTrigger);
 
