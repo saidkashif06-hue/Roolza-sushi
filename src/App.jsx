@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Preloader from "./components/Preloader";
+import Preloader from "../components/Preloader";
 import Home from "./pages/Home";
 
 import Lenis from "lenis";
