@@ -1,5 +1,5 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, ShoppingBag, Menu, X, Plus, ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,7 +21,6 @@ const Navbar = () => {
   const [menuDropdownOpen, setMenuDropdownOpen] = useState(false);
   const [mobileMenuAccordionOpen, setMobileMenuAccordionOpen] = useState(false);
   const location = useLocation();
-   const navigate = useNavigate()
   const headerRef = useRef(null);
   const logoRef = useRef(null);
   const logoWrapRef = useRef(null);
@@ -31,17 +30,16 @@ const Navbar = () => {
   const menuDropdownRef = useRef(null);
 
   const menuCategories = [
-    { name: "Soups", path: "/menu/soups" },
-    { name: "Sushi", path: "/menu/sushi" },
-    { name: "Beverages", path: "/menu/beverages" },
-    { name: "Desserts", path: "/menu/desserts" },
+    { name: "Soups", path: "/soups" },
+    { name: "Sushi", path: "/sushi" },
+    { name: "Beverages", path: "/beverages" },
+    { name: "Desserts", path: "/desserts" },
   ];
 
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Menu", isDropdown: true, children: menuCategories },
-   
     { name: "Contact", path: "/contact" },
   ];
 
@@ -50,15 +48,17 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
-  const isMenuActive = () => location.pathname.startsWith("/menu");
+  const isMenuActive = () =>
+    location.pathname.startsWith("/menu") ||
+    menuCategories.some((c) => location.pathname.startsWith(c.path));
 
   const closeMobileMenu = () => {
     setMobileOpen(false);
     setMobileMenuAccordionOpen(false);
   };
 
-  const goTo = (path) => {
-    navigate(path);
+  // Called on any Link click so dropdowns/mobile menu close after navigating
+  const handleNavClick = () => {
     closeMobileMenu();
     setMenuDropdownOpen(false);
   };
@@ -102,26 +102,6 @@ const Navbar = () => {
 
       gsap.set(underlineRef.current, { scaleX: 0 });
 
-      // ---- Scroll condensing ----
-      // Previously this created THREE brand-new gsap.to() tweens on every
-      // single scroll tick (onUpdate fires continuously while scrubbing).
-      // Each gsap.to() call allocates a tween object and runs GSAP's full
-      // tween-setup machinery just to animate one frame's worth of change —
-      // wasteful when you already have a smoothed progress value from scrub.
-      //
-      // Fix: use gsap.quickTo() for the numeric/transform values (scale,
-      // underline) — it creates the tween ONCE outside onUpdate and reuses
-      // it, which is what quickTo is built for. For backgroundColor/
-      // backdropFilter/boxShadow, write plain style values directly instead
-      // of tweening through gsap.to() — the scrub's own smoothing already
-      // gives you a smooth progress value, so an extra layer of GSAP
-      // tweening on top of it is redundant.
-      //
-      // backdrop-filter: blur() is also one of the most expensive CSS
-      // properties to animate (it forces the browser to re-sample everything
-      // behind the element every frame) — there's no way around that cost
-      // if you want the blur effect, but removing the redundant tween layer
-      // around it at least stops making it worse.
       const setLogoScale = gsap.quickTo(logoRef.current, "scale", {
         duration: 0.2,
         ease: "none",
@@ -186,9 +166,9 @@ const Navbar = () => {
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-10">
           <div className="flex h-[76px] items-center justify-between font-montserrat lg:h-[84px]">
 
-            {/* LOGO — untouched, stays a real Link */}
-            <div
-              
+            {/* LOGO */}
+            <Link
+              to="/"
               onClick={closeMobileMenu}
               className="relative z-[60] flex shrink-0 items-center gap-2.5"
             >
@@ -207,9 +187,9 @@ const Navbar = () => {
                   className="pointer-events-none absolute -bottom-2 left-0 h-[2px] w-full origin-left rounded-full bg-[#ff3b30]"
                 />
               </div>
-            </div>
+            </Link>
 
-            {/* DESKTOP NAVIGATION — now navigates via navigate() instead of Link */}
+            {/* DESKTOP NAVIGATION */}
             <nav ref={navRef} className="hidden  items-center gap-7 lg:flex">
               {navLinks.map((link) => {
                 if (link.isDropdown) {
@@ -259,10 +239,10 @@ const Navbar = () => {
                           {link.children.map((child) => {
                             const childActive = location.pathname === child.path;
                             return (
-                              <button
+                              <Link
                                 key={child.path}
-                                type="button"
-                                onClick={() => goTo(child.path)}
+                                to={child.path}
+                                onClick={handleNavClick}
                                 className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[13px] transition-all duration-200 ${
                                   childActive
                                     ? "bg-[#ff3b30]/10 font-semibold text-[#ff5a50]"
@@ -274,7 +254,7 @@ const Navbar = () => {
                                   size={13}
                                   className={childActive ? "text-[#ff3b30]" : "text-white/30"}
                                 />
-                              </button>
+                              </Link>
                             );
                           })}
                         </div>
@@ -285,12 +265,11 @@ const Navbar = () => {
 
                 const active = isActive(link.path);
                 return (
-                  <button
+                  <Link
                     key={link.path}
-                    type="button"
-                    onClick={() => navigate(link.path)}
+                    to={link.path}
                     aria-current={active ? "page" : undefined}
-                    className={`relative py-2 cursor-pointer text-[13px] font-medium transition-all duration-300 ${
+                    className={`relative py-2 text-[13px] font-medium transition-all duration-300 ${
                       active ? "text-white" : "text-white/55 hover:text-white"
                     }`}
                   >
@@ -300,7 +279,7 @@ const Navbar = () => {
                         active ? "w-full opacity-100" : "w-0 opacity-0"
                       }`}
                     />
-                  </button>
+                  </Link>
                 );
               })}
             </nav>
@@ -308,23 +287,23 @@ const Navbar = () => {
             {/* RIGHT SIDE */}
             <div className="flex items-center gap-3">
               <div ref={ctaRef} className="hidden items-center gap-2.5 sm:flex">
-                <button
-                  type="button"
-                  onClick={() => goTo("/contact")}
-                  className="flex items-center gap-2 cursor-pointer rounded-full border border-white/15 bg-white/[0.03] px-4 py-3 text-[13px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:bg-white/[0.08] hover:text-white"
+                <Link
+                  to="/contact"
+                  onClick={handleNavClick}
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-3 text-[13px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:bg-white/[0.08] hover:text-white"
                 >
                   Book a Table
                   <ArrowRight size={13} className="opacity-70" />
-                </button>
+                </Link>
 
-                <button
-                  type="button"
-                  onClick={() => navigate("/order-now")}
-                  className="group flex items-center cursor-pointer gap-2 rounded-full bg-[#ff3b30] px-5 py-3 text-[13px] font-bold text-white shadow-lg shadow-red-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ff5147] hover:shadow-red-900/40"
+                <Link
+                  to="/order-now"
+                  onClick={handleNavClick}
+                  className="group flex items-center gap-2 rounded-full bg-[#ff3b30] px-5 py-3 text-[13px] font-bold text-white shadow-lg shadow-red-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ff5147] hover:shadow-red-900/40"
                 >
                   <ShoppingBag size={14} className="transition-transform duration-300 group-hover:scale-110" />
                   Order Now
-                </button>
+                </Link>
               </div>
 
               <button
@@ -385,10 +364,10 @@ const Navbar = () => {
                       {link.children.map((child) => {
                         const childActive = location.pathname === child.path;
                         return (
-                          <button
+                          <Link
                             key={child.path}
-                            type="button"
-                            onClick={() => goTo(child.path)}
+                            to={child.path}
+                            onClick={handleNavClick}
                             className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition-all duration-200 ${
                               childActive
                                 ? "font-semibold text-[#ff5a50]"
@@ -400,7 +379,7 @@ const Navbar = () => {
                               size={14}
                               className={childActive ? "text-[#ff3b30]" : "text-white/30"}
                             />
-                          </button>
+                          </Link>
                         );
                       })}
                     </div>
@@ -411,10 +390,10 @@ const Navbar = () => {
 
             const active = isActive(link.path);
             return (
-              <button
+              <Link
                 key={link.path}
-                type="button"
-                onClick={() => goTo(link.path)}
+                to={link.path}
+                onClick={handleNavClick}
                 aria-current={active ? "page" : undefined}
                 className={`flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-sm transition-all duration-200 ${
                   active
@@ -427,28 +406,28 @@ const Navbar = () => {
                   size={15}
                   className={active ? "text-[#ff3b30]" : "text-white/30"}
                 />
-              </button>
+              </Link>
             );
           })}
 
           <div className="mt-2 flex flex-col gap-2 border-t border-white/10 pt-3">
-            <button
-              type="button"
-              onClick={() => goTo("/order")}
+            <Link
+              to="/order-now"
+              onClick={handleNavClick}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ff3b30] px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:bg-[#ff5147]"
             >
               <ShoppingBag size={15} />
               Order Now
-            </button>
+            </Link>
 
-            <button
-              type="button"
-              onClick={() => goTo("/contact")}
+            <Link
+              to="/contact"
+              onClick={handleNavClick}
               className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.03] px-5 py-3.5 text-sm font-semibold text-white/85 transition-all duration-300 hover:bg-white/[0.08] hover:text-white"
             >
               Book a Table
               <ArrowRight size={15} className="opacity-70" />
-            </button>
+            </Link>
           </div>
         </nav>
       </div>

@@ -5,15 +5,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const desserts = [
-  { name: "Creamy Vanilla Cake", image: "/Desert/creamyCake.jpg" },
-  { name: "Chocolate Fudge Cake", image: "/Desert/chocklateCake.jpg" },
-  { name: "Classic Yellow Cake", image: "/Desert/yellowCake.jpg" },
-  { name: "Assorted Ice Cream Tub", image: "/Desert/icecreams.jpg" },
-  { name: "Brown Sugar Caramel Cake", image: "/Desert/brown cake.jpg" },
-  { name: "Ice Cream Scoop", image: "/Desert/ice cream.jpg" },
+  { name: "Creamy Vanilla Cake", image: "/Desert/creamyCake.webp" },
+  { name: "Chocolate Fudge Cake", image: "/Desert/chocklateCake.webp" },
+  { name: "Classic Yellow Cake", image: "/Desert/yellowCake.webp" },
+  { name: "Assorted Ice Cream Tub", image: "/Desert/icecreams.webp" },
+  { name: "Brown Sugar Caramel Cake", image: "/Desert/brown_cake.webp" },
+  { name: "Ice Cream Scoop", image: "/Desert/ice_cream.webp" },
 ];
 
-const DessertCard = ({ item, offset, cardRef }) => (
+const DessertCard = ({ item, offset, cardRef, priority }) => (
   <div
     ref={cardRef}
     className={`group flex flex-col items-center ${
@@ -24,7 +24,10 @@ const DessertCard = ({ item, offset, cardRef }) => (
       <img
         src={item.image}
         alt={item.name}
-        loading="lazy"
+        width={360}
+        height={384}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
       />
@@ -105,7 +108,12 @@ const Desserts = () => {
         className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-16 sm:gap-x-10 sm:gap-y-24 lg:grid-cols-3"
       >
         {desserts.map((item, i) => (
-          <DessertCard key={item.name} item={item} offset={i % 2 !== 0} />
+          <DessertCard
+            key={item.name}
+            item={item}
+            offset={i % 2 !== 0}
+            priority={i < 3}
+          />
         ))}
       </div>
     </section>

@@ -1,24 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, ArrowUpRight } from "lucide-react";
-// lucide's Instagram/Facebook icons are generic line-art, not the real
-// brand marks — react-icons/fa6 ships the actual Instagram/Facebook/TikTok/
-// WhatsApp logos. Install once: npm install react-icons
 import { FaInstagram, FaFacebookF, FaTiktok, FaWhatsapp } from "react-icons/fa6";
 
 const QUICK_LINKS = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
   { name: "Menu", path: "/menu" },
-  
   { name: "Contact", path: "/contact" },
 ];
 
 const MENU_LINKS = [
-  { name: "Sashimi & Nigiri", path: "/menu" },
-  { name: "Signature Rolls", path: "/menu" },
-  { name: "Maki Rolls", path: "/menu" },
-  { name: "Beverages", path: "/menu" },
+  { name: "Sushi & Food", path: "/sushi" },
+  { name: "Soups", path: "/soups" },
+  { name: "Beverages", path: "/beverages" },
+  { name: "Desserts", path: "/desserts" },
   { name: "Full Menu", path: "/menu" },
 ];
 

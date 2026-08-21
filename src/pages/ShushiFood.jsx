@@ -5,19 +5,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const sushiItems = [
-  { name: "Classic Maki Rolls", image: "/menu/makiRool.png" },
-  { name: "Sashimi & Nigiri Selection", image: "/menu/Shashmi and Nigiri.png" },
-  { name: "Signature Sushi Platter", image: "/menu/shushi platter.png" },
-  { name: "Special Maki Rolls", image: "/menu/specialMakiRoll.png" },
-  { name: "Fresh Salmon Sashimi", image: "/menu/salmon.jpg" },
-  { name: "Assorted Sushi Selection", image: "/menu/some shushi.jpg" },
-  { name: "Shrimp & Sushi Combo", image: "/menu/shrink and shushi.jpg" },
-  { name: "Classic Rice Sushi", image: "/menu/rice Shushi.jpg" },
-  { name: "Japanese Beef Rice", image: "/menu/BeefRice.png" },
-  { name: "Fish & Prawn Selection", image: "/menu/FishandPrawn.png" },
+  { name: "Classic Maki Rolls", image: "/menu/makiRool.webp" },
+  { name: "Sashimi & Nigiri Selection", image: "/menu/Shashmi_and_Nigiri.webp" },
+  { name: "Signature Sushi Platter", image: "/menu/shushi_platter.webp" },
+  { name: "Special Maki Rolls", image: "/menu/specialMakiRoll.webp" },
+  { name: "Fresh Salmon Sashimi", image: "/menu/salmon.webp" },
+  { name: "Assorted Sushi Selection", image: "/menu/some_shushi.webp" },
+  { name: "Shrimp & Sushi Combo", image: "/menu/shrink_and_shushi.webp" },
+  { name: "Classic Rice Sushi", image: "/menu/rice_Shushi.webp" },
+  { name: "Japanese Beef Rice", image: "/menu/BeefRice.webp" },
+  { name: "Fish & Prawn Selection", image: "/menu/FishandPrawn.webp" },
 ];
 
-const FoodCard = ({ item, offset, cardRef }) => (
+const FoodCard = ({ item, offset, cardRef, priority }) => (
   <div
     ref={cardRef}
     className={`group flex flex-col items-center ${
@@ -28,7 +28,10 @@ const FoodCard = ({ item, offset, cardRef }) => (
       <img
         src={item.image}
         alt={item.name}
-        loading="lazy"
+        width={360}
+        height={384}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
       />
@@ -109,7 +112,12 @@ const SushiAndFood = () => {
         className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-16 sm:gap-x-10 sm:gap-y-24 lg:grid-cols-3"
       >
         {sushiItems.map((item, i) => (
-          <FoodCard key={item.name} item={item} offset={i % 2 !== 0} />
+          <FoodCard
+            key={item.name}
+            item={item}
+            offset={i % 2 !== 0}
+            priority={i < 3}
+          />
         ))}
       </div>
     </section>

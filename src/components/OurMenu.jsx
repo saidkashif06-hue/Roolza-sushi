@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowRight, UtensilsCrossed } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,29 +7,32 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const foodItems = [
-  { name: "Sashimi & Nigiri Selection", category: "SASHIMI · NIGIRI", image: "/menu/Shashmi and Nigiri.png" },
-  { name: "Signature Sushi Platter", category: "SIGNATURE", image: "/menu/shushi platter.png" },
-  { name: "Special Maki Rolls", category: "MAKI · ROLLS", image: "/menu/specialMakiRoll.png" },
-  { name: "Japanese Beef Rice", category: "BEEF · RICE", image: "/menu/BeefRice.png" },
-  { name: "Fish & Prawn Selection", category: "SEAFOOD", image: "/menu/FishandPrawn.png" },
-  { name: "Classic Maki Rolls", category: "MAKI · ROLLS", image: "/menu/makiRool.png" },
+  { name: "Sashimi & Nigiri Selection", category: "SASHIMI · NIGIRI", image: "/menu/Shashmi_and_Nigiri.webp" },
+  { name: "Signature Sushi Platter", category: "SIGNATURE", image: "/menu/shushi_platter.webp" },
+  { name: "Special Maki Rolls", category: "MAKI · ROLLS", image: "/menu/specialMakiRoll.webp" },
+  { name: "Japanese Beef Rice", category: "BEEF · RICE", image: "/menu/BeefRice.webp" },
+  { name: "Fish & Prawn Selection", category: "SEAFOOD", image: "/menu/FishandPrawn.webp" },
+  { name: "Classic Maki Rolls", category: "MAKI · ROLLS", image: "/menu/makiRool.webp" },
 ];
 
 const beverages = [
-  { name: "Fresh Orange", category: "FRESH JUICE", image: "/Bevrages/orange.png" },
-  { name: "Raspberry Fizz", category: "SIGNATURE DRINK", image: "/Bevrages/Rasberryy.png" },
-  { name: "Banana Milkshake", category: "MILKSHAKE", image: "/Bevrages/bananaMilkshake.png" },
-  { name: "Mango Fizz", category: "FRESH COOLER", image: "/Bevrages/lemonMint.png" },
-  { name: "Classic Milkshake", category: "MILKSHAKE", image: "/Bevrages/Milkshake.png" },
-  { name: "Mint Margarita", category: "SIGNATURE DRINK", image: "/Bevrages/Mintmargerita.png" },
+  { name: "Fresh Orange", category: "FRESH JUICE", image: "/Bevrages/orange.webp" },
+  { name: "Raspberry Fizz", category: "SIGNATURE DRINK", image: "/Bevrages/Rasberryy.webp" },
+  { name: "Banana Milkshake", category: "MILKSHAKE", image: "/Bevrages/bananaMilkshake.webp" },
+  { name: "Mango Fizz", category: "FRESH COOLER", image: "/Bevrages/lemonMint.webp" },
+  { name: "Classic Milkshake", category: "MILKSHAKE", image: "/Bevrages/Milkshake.webp" },
+  { name: "Mint Margarita", category: "SIGNATURE DRINK", image: "/Bevrages/Mintmargerita.webp" },
 ];
 
-const MenuCard = ({ item, index }) => (
+const MenuCard = ({ item, index, priority }) => (
   <div className="menu-card group relative block h-[420px] w-[350px] shrink-0 snap-start overflow-hidden bg-[#12151a] sm:h-[400px] sm:w-[340px]">
     <img
       src={item.image}
       alt={item.name}
-      loading="lazy"
+      width={340}
+      height={400}
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
     />
@@ -74,9 +77,9 @@ const MenuCard = ({ item, index }) => (
   </div>
 );
 
-const CtaCard = ({ label = "Explore Full Menu" }) => (
-  <div
-    
+const CtaCard = ({ to, label = "Explore Full Menu" }) => (
+  <Link
+    to={to}
     className="group relative flex h-[450px] w-[300px] shrink-0 snap-start flex-col items-start justify-between overflow-hidden bg-[#ff3b30] px-7 py-7 transition-colors duration-500 hover:bg-[#ff5147] sm:h-[400px] sm:w-[340px]"
   >
     <UtensilsCrossed size={28} className="text-white/80" />
@@ -89,7 +92,7 @@ const CtaCard = ({ label = "Explore Full Menu" }) => (
         <ArrowRight size={18} />
       </span>
     </div>
-  </div>
+  </Link>
 );
 
 /**
@@ -112,7 +115,7 @@ const Menu = () => {
   const sectionRef = useRef(null);
   const introRef = useRef(null);
   const beverageTitleRef = useRef(null);
-const navigate = useNavigate()
+
   const foodPinRef = useRef(null);
   const foodTrackRef = useRef(null);
   const bevPinRef = useRef(null);
@@ -224,11 +227,9 @@ const navigate = useNavigate()
 
       <HorizontalRail pinRef={foodPinRef} trackRef={foodTrackRef}>
         {foodItems.map((item, i) => (
-          <MenuCard key={item.name} item={item} index={i} />
+          <MenuCard key={item.name} item={item} index={i} priority={i < 2} />
         ))}
-       <div className="hover:cursor-pointer" onClick={()=>navigate('/menu/sushi')}>
-         <CtaCard  label="Explore Full Menu" />
-       </div>
+        <CtaCard to="/sushi" label="Explore Full Menu" />
       </HorizontalRail>
 
       {/* ============ BEVERAGES ============ */}
@@ -260,11 +261,9 @@ const navigate = useNavigate()
 
       <HorizontalRail pinRef={bevPinRef} trackRef={bevTrackRef}>
         {beverages.map((item, i) => (
-          <MenuCard key={item.name} item={item} index={i} />
+          <MenuCard key={item.name} item={item} index={i} priority={i < 2} />
         ))}
-        <div className="hover:cursor-pointer" onClick={()=>navigate('/menu/beverages')}>
-          <CtaCard label="View Full Menu" />
-        </div>
+        <CtaCard to="/beverages" label="View Full Menu" />
       </HorizontalRail>
     </section>
   );

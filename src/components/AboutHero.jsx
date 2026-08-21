@@ -127,7 +127,7 @@ const AboutHero = () => {
         >
           <img
             ref={imageRef}
-            src="/aboutheroimg.png"
+            src="/aboutheroimg.webp"
             width="1600"
             height="1400"
             fetchpriority="high"

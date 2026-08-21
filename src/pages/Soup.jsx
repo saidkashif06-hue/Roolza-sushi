@@ -5,15 +5,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const soups = [
-  { name: "Spicy Chicken Soup", image: "/soup/chicken soup.jpg" },
-  { name: "Creamy Mushroom Soup", image: "/soup/creamy soup.jpg" },
-  { name: "Makhni Corn Soup", image: "/soup/makhnii shoup.jpg" },
-  { name: "Classic Vegetable Soup", image: "/soup/pexels-fajrinugroho-16811680.jpg" },
-  { name: "Yakhni Mutton Soup", image: "/soup/yahni soup.jpg" },
-  { name: "Tangy Chatni Soup", image: "/soup/chatni soup.jpg" },
+  { name: "Spicy Chicken Soup", image: "/soup/chicken_soup.webp" },
+  { name: "Creamy Mushroom Soup", image: "/soup/creamy_soup.webp" },
+  { name: "Makhni Corn Soup", image: "/soup/makhnii_shoup.webp" },
+  { name: "Classic Vegetable Soup", image: "/soup/pexels-fajrinugroho-16811680.webp" },
+  { name: "Yakhni Mutton Soup", image: "/soup/yahni_soup.webp" },
+  { name: "Tangy Chatni Soup", image: "/soup/chatni_soup.webp" },
 ];
 
-const SoupCard = ({ item, offset, cardRef }) => (
+const SoupCard = ({ item, offset, cardRef, priority }) => (
   <div
     ref={cardRef}
     className={`group flex flex-col items-center ${
@@ -24,7 +24,10 @@ const SoupCard = ({ item, offset, cardRef }) => (
       <img
         src={item.image}
         alt={item.name}
-        loading="lazy"
+        width={360}
+        height={384}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
       />
@@ -105,7 +108,12 @@ const Soups = () => {
         className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-16 sm:gap-x-10 sm:gap-y-24 lg:grid-cols-3"
       >
         {soups.map((item, i) => (
-          <SoupCard key={item.name} item={item} offset={i % 2 !== 0} />
+          <SoupCard
+            key={item.name}
+            item={item}
+            offset={i % 2 !== 0}
+            priority={i < 3}
+          />
         ))}
       </div>
     </section>

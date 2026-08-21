@@ -5,20 +5,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const beverages = [
-  { name: "Green Mint Cooler", image: "/Bevrages/green mint.jpg" },
-  { name: "Lemon Mint Cooler", image: "/Bevrages/lemonMint.png" },
-  { name: "Classic Milkshake", image: "/Bevrages/Milkshake.png" },
-  { name: "Mint Margarita", image: "/Bevrages/Mintmargerita.png" },
-  { name: "Fresh Orange", image: "/Bevrages/orange.png" },
-  { name: "Berry Blast Cooler", image: "/Bevrages/R.png" },
-  { name: "Raspberry Fizz", image: "/Bevrages/Rasberryy.png" },
-  { name: "Strawberry Milkshake", image: "/Bevrages/strawbery shake.jpg" },
-  { name: "Fresh Strawberry Cooler", image: "/Bevrages/strawbery.jpg" },
-  { name: "Apple Milkshake", image: "/Bevrages/appleShake.jpg" },
-  { name: "Banana Milkshake", image: "/Bevrages/bananaMilkshake.png" },
+  { name: "Green Mint Cooler", image: "/Bevrages/green_mint.webp" },
+  { name: "Lemon Mint Cooler", image: "/Bevrages/lemonMint.webp" },
+  { name: "Classic Milkshake", image: "/Bevrages/Milkshake.webp" },
+  { name: "Mint Margarita", image: "/Bevrages/Mintmargerita.webp" },
+  { name: "Fresh Orange", image: "/Bevrages/orange.webp" },
+  { name: "Berry Blast Cooler", image: "/Bevrages/R.webp" },
+  { name: "Raspberry Fizz", image: "/Bevrages/Rasberryy.webp" },
+  { name: "Strawberry Milkshake", image: "/Bevrages/strawbery_shake.webp" },
+  { name: "Fresh Strawberry Cooler", image: "/Bevrages/strawbery.webp" },
+  { name: "Apple Milkshake", image: "/Bevrages/appleShake.webp" },
+  { name: "Banana Milkshake", image: "/Bevrages/bananaMilkshake.webp" },
 ];
 
-const BeverageCard = ({ item, offset, cardRef }) => (
+const BeverageCard = ({ item, offset, cardRef, priority }) => (
   <div
     ref={cardRef}
     className={`group flex flex-col items-center ${
@@ -29,7 +29,10 @@ const BeverageCard = ({ item, offset, cardRef }) => (
       <img
         src={item.image}
         alt={item.name}
-        loading="lazy"
+        width={360}
+        height={384}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
       />
@@ -113,7 +116,12 @@ const Beverages = () => {
         className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-16 sm:gap-x-10 sm:gap-y-24 lg:grid-cols-3"
       >
         {beverages.map((item, i) => (
-          <BeverageCard key={item.name} item={item} offset={i % 2 !== 0} />
+          <BeverageCard
+            key={item.name}
+            item={item}
+            offset={i % 2 !== 0}
+            priority={i < 3}
+          />
         ))}
       </div>
     </section>
